@@ -11,7 +11,7 @@ function CircleEmitter(options) {
     this.x = options.x || 0;
     this.y = options.y || 0;
     this.size = options.size || 100;
-    this.power = options.power || 0.1;
+    this.power = options.power || 1;
     this.update = function () {
     };
     this.value = function (x, y, dt) {
@@ -45,7 +45,7 @@ function ConnectorEmitter(options) {
     this.one = options.one;
     this.two = options.two;
 
-    this.frequency = options.frequency || 0.1;
+    this.frequency = options.frequency || 0.001;
     this.duration = options.duration || 1;
     this.time = 0;
     this.r = options.r || 0.1;
@@ -59,10 +59,10 @@ function ConnectorEmitter(options) {
             this.time += dt;
             if (Math.random() < this.frequency * this.time) {
                 this.thirdPoint = {
-                    x: this.one.x + (Math.random() * 100) | 0,
-                    y: this.one.y + (Math.random() * 100) | 0
+                    x: this.one.x / 2 + this.two.x / 2 + ((Math.random() * 300) | 0) - 150,
+                    y: this.one.y / 2 + this.two.x / 2 + ((Math.random() * 300) | 0) - 150
                 };
-                this.emitter = new CircleEmitter({size: 10, power: 0.5});
+                this.emitter = new CircleEmitter({size: 10, power: 7});
             }
         }
         else if (this.position >= 1) {
@@ -97,10 +97,10 @@ function Model() {
     this.emitters = [
         new AmbientEmitter(),
         a = new CircleEmitter({x: 100, y: 100, size: 50}),
-        b = new CircleEmitter({x: 200, y: 150, size: 50}),
-        new ConnectorEmitter({one: a, two: a}),
-        new ConnectorEmitter({one: b, two: b}),
-        new ConnectorEmitter({one: a, two: b})];
+        b = new CircleEmitter({x: 200, y: 250, size: 50}),
+        new ConnectorEmitter({one: a, two: b}),
+        new ConnectorEmitter({one: b, two: a})
+    ];
     this.update = function (dt) {
         this.emitters.forEach(function (e) {
             e.update(dt)
@@ -138,7 +138,7 @@ function Colorizer(options) {
 function Space(options) {
     this.model = options.model || new Model();
     this.colorizer = options.colorizer || new Colorizer();
-    this.decay = options.decay || 0.25;
+    this.decay = options.decay || 0.5;
     this.width = options.width || 640;
     this.height = options.height || 480;
 
